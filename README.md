@@ -1,3 +1,8 @@
+因为实战中Mimikatz的工具被各大安全厂商视为眼中钉，所以自己实现了一个对于LSASS进程的hash转存
+
+
+x86和x64的都可以在实战中试下
+
 ###### Usage:
 
 将编译后的文件放到目标靶机上以管理员身份运行，即可获得dump文件
@@ -16,7 +21,10 @@
 
 
 360
+![图片](https://user-images.githubusercontent.com/83112602/227720487-e9890ab3-f5d9-41d6-a51f-67834b527fbd.png)
+
 ![image-20230325104958465](https://user-images.githubusercontent.com/83112602/227687568-bb460140-6daf-4fde-a557-c7aa92c37681.png)
+
 
 
 windows defender
